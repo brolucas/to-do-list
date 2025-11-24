@@ -1,0 +1,38 @@
+[
+  {
+    "model": "todo.task",
+    "pk": 1,
+    "fields": {
+      "title": "Buy groceries",
+      "complete": false,
+      "created": "2025-11-24T10:00:00Z"
+    }
+  },
+  {
+    "model": "todo.task",
+    "pk": 2,
+    "fields": {
+      "title": "Finish Django project",
+      "complete": false,
+      "created": "2025-11-24T11:30:00Z"
+    }
+  },
+  {
+    "model": "todo.task",
+    "pk": 3,
+    "fields": {
+      "title": "Read a book",
+      "complete": true,
+      "created": "2025-11-23T18:45:00Z"
+    }
+  },
+  {
+    "model": "todo.task",
+    "pk": 4,
+    "fields": {
+      "title": "Go for a run",
+      "complete": false,
+      "created": "2025-11-24T07:15:00Z"
+    }
+  }
+]
