@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
-from .forms import *
+from .forms import TaskForm
+from django.conf import settings
+
+def index(request):
+	tasks = Task.objects.all()
+	form = TaskForm()
 # Create your views here.
 def index(request):
 	tasks = Task.objects.all()
 
 	form = TaskForm()
-
 	if request.method == 'POST':
 		form = TaskForm(request.POST)
 		if form.is_valid():
@@ -15,7 +19,7 @@ def index(request):
 			form.save()
 		return redirect('/')
 
-	context= {'tasks':tasks,'form':form}
+	context= {'tasks':tasks,'form':form,'Version':settings.VERSION}
 	return render(request, 'tasks/list.html',context)
 
 def updateTask(request,pk):

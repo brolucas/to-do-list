@@ -1,5 +1,16 @@
-# to-do-list app
-To-Do-List application built with django to Create, Update and Delete tasks.
-<br>
-<br>
-![todolist](https://user-images.githubusercontent.com/65074901/125083144-a5e03900-e0e5-11eb-9092-da716a30a5f3.JPG)
+# Projet to-do-list app
+
+<b>Nous passerons en systeme de version de type 1.0.1</b>
+
+```
+- pour une update mineur incrementé le dernier chiffre : 1.0.2
+
+- pour une update de moyenne ampleur 1.1.0
+
+- pour une update majeur 2.0.0
+```
+
+<b>Mettre des message clair en Commit en utilisant le conventionnal commit
+
+
+
