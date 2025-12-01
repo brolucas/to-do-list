@@ -5,3 +5,8 @@
 /httpRequests/
 *.sqlite3
 *.zip
+/.idea/misc.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/to-do-list.iml
+/.idea/vcs.xml
+/.idea/workspace.xml
