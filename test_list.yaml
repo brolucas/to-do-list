@@ -1,0 +1,33 @@
+Auto:
+  - id: TA01
+    description: Test d'accès à la page
+  - id: TA02
+    description: Création d’une tâche
+  - id: TA03
+    description: Affichage de la page liste des tâches
+  - id: TA04
+    description: Affichage de la page d’édition
+  - id: TA05
+    description: Modification d’une tâche
+  - id: TA06
+    description: Affichage de la page de suppression
+  - id: TA07
+    description: Suppression d’une tâche
+  - id: TA08
+    description: Import du module WSGI
+  - id: TA09
+    description: Import du module ASGI
+  - id: TA10
+    description: Import du fichier JSON
+
+Manuel:
+  - id: TM01
+    description: Création d’une tâche sans titre
+  - id: TM02
+    description: Mise à jour avec un titre vide
+  - id: TM03
+    description: Vérification du template utilisé pour la liste
+  - id: TM04
+    description: Vérification de l’ordre des tâches dans la liste
+  - id: TM05
+    description: Vérifier que la suppression redirige sur la bonne page
