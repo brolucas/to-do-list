@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "==4.*"
 ruff = "*"
+django = "*"
 
 [dev-packages]
 coverage = "*"

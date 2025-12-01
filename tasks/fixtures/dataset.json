@@ -3,27 +3,27 @@
     "model": "tasks.task",
     "pk": 1,
     "fields": {
-      "title": "Buy groceries",
+      "title": "Configurer Ruff",
       "complete": false,
-      "created": "2025-11-24T10:00:00Z"
+      "created": "2025-01-01T09:00:00Z"
     }
   },
   {
     "model": "tasks.task",
     "pk": 2,
     "fields": {
-      "title": "Finish Django project",
-      "complete": false,
-      "created": "2025-11-24T11:30:00Z"
+      "title": "Ecrire des tests",
+      "complete": true,
+      "created": "2025-01-02T10:30:00Z"
     }
   },
   {
     "model": "tasks.task",
     "pk": 3,
     "fields": {
-      "title": "Read a book",
-      "complete": true,
-      "created": "2025-11-23T18:45:00Z"
+      "title": "Preparer la release",
+      "complete": false,
+      "created": "2025-01-03T15:45:00Z"
     }
   }
 ]
