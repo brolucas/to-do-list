@@ -1,116 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Todo list</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<style>
-		:root {
-			color-scheme: light;
-		}
-		.sr-only {
-			position: absolute;
-			width: 1px;
-			height: 1px;
-			padding: 0;
-			margin: -1px;
-			overflow: hidden;
-			clip: rect(0, 0, 0, 0);
-			border: 0;
-		}
-		body{
-			background-color: #3a86ff;
-		}
-		input{
-			width: 100%;
-			padding: 12px 20px;
-			margin: 8px 0;
-			box-sizing: border-box;
-		}
-		input::placeholder {
-		  color: #d3d3d3;
-		}
-		.center-column{
-			max-width: 640px;
-			margin: 20px auto;
-			padding:20px;
-			background-color: #fff;
-			border-radius: 6px;
-			box-shadow: 6px 2px 30px 0px rgba(0,0,0,0.35);
-		}
-		.item-row{
-			background-color: #4a1c9c;
-			margin: 10px 0;
-			padding: 16px;
-			border-radius: 4px;
-			color: #fff;
-			font-size: 16px;
-			box-shadow: 0px -1px 10px -4px rgba(0,0,0,0.65);
-		}
-		.btn-danger{
-			background-color: #c06500;
-			border-color: #9e5400;
-		}
-		.version-label {
-			text-align: center;
-			color: #0b1e3c;
-			margin-top: 10px;
-			font-weight: 600;
-		}
-	</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Todo list</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        :root { color-scheme: light; }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+
+        body { background-color: #3a86ff; }
+
+        .center-column {
+            max-width: 640px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 6px 2px 30px 0px rgba(0,0,0,0.35);
+        }
+
+        .item-row {
+            background-color: #4a1c9c;
+            margin: 10px 0;
+            padding: 16px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            box-shadow: 0px -1px 10px -4px rgba(0,0,0,0.65);
+        }
+
+        .btn-danger {
+            background-color: #b85400;
+            border-color: #8a4200;
+            color: #fff;
+        }
+
+        .btn-info {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+        button:focus, a:focus {
+            outline: 3px solid #ffbf00;
+            outline-offset: 2px;
+        }
+
+        .version-label {
+            text-align: center;
+            color: #0b1e3c;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-<a class="sr-only" href="#main-content">Skip to main content</a>
-<header class="text-center my-3">
-	<h1 style="color: #fb5607; font-size: 48px; text-shadow: -4px 0 black, 0 4px black, 4px 0 black, 0 -4px black;">
-		<strong>TO DO LIST</strong>
-	</h1>
-</header>
-<main id="main-content" class="center-column" role="main">
-	<form method="POST" action="/">
-		{% csrf_token %}
-		<label class="sr-only" for="task-title">Task title</label>
-		{{ form.title }}
-		<div class="form-check mt-2">
-			{{ form.priority }}
-			<label class="form-check-label" for="task-priority">Mark as priority</label>
-		</div>
-		<button class="btn btn-info mt-2" type="submit">Create Task</button>
-	</form>
 
-	<section aria-label="Tasks">
-	<ul class="list-unstyled mt-4">
-	{% for task in tasks %}
-		<li class="item-row" id="task-{{ task.id }}" data-task-id="{{ task.id }}">
-			<div class="d-flex justify-content-between align-items-center">
-				<div>
-					{% if task.complete %}
-						<del>{{ task }}</del>
-					{% else %}
-						<span>
-							{% if task.priority %}
-								<span class="badge bg-warning text-dark mr-1">Priority</span>
-							{% endif %}
-							{{ task }}
-						</span>
-					{% endif %}
-				</div>
-				<div class="btn-group" role="group" aria-label="Task actions">
-					<a class="btn btn-sm btn-info" data-testid="task-update-{{ task.id }}" href="{% url 'update_task' task.id %}">Update</a>
-					<a class="btn btn-sm btn-danger" data-testid="task-delete-{{ task.id }}" href="{% url 'delete' task.id %}">Delete</a>
-				</div>
-			</div>
-		</li>
-	{% empty %}
-		<li class="item-row">No tasks yet.</li>
-	{% endfor %}
-	</ul>
-	</section>
+<a class="sr-only" href="#main-content">Skip to main content</a>
+
+<header class="text-center my-3">
+    <h1 style="color: #fb5607; font-size: 48px; text-shadow: -4px 0 black, 0 4px black, 4px 0 black, 0 -4px black;">
+        <strong>TO DO LIST</strong>
+    </h1>
+</header>
+
+<main id="main-content" class="center-column" role="main">
+    <form method="POST" action="/">
+        {% csrf_token %}
+
+        <!-- Title Field -->
+        <div class="mb-2">
+            <label for="task-title" class="form-label sr-only">Task title</label>
+            {{ form.title }}
+        </div>
+
+        <!-- Priority Checkbox -->
+        <div class="form-check mb-2">
+            {{ form.priority }}
+            <label for="task-priority" class="form-check-label">Mark as priority</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-info mt-2">Create Task</button>
+    </form>
+
+    <!-- Tasks List -->
+    <section aria-label="Tasks" class="mt-4">
+        <ul class="list-unstyled">
+        {% for task in tasks %}
+            <li class="item-row" id="task-{{ task.id }}" data-task-id="{{ task.id }}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if task.complete %}
+                            <del>{{ task }}</del>
+                        {% else %}
+                            <span>
+                                {% if task.priority %}
+                                    <span class="badge bg-warning text-dark me-1">Priority</span>
+                                {% endif %}
+                                {{ task }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Task actions">
+                        <a class="btn btn-sm btn-info" href="{% url 'update_task' task.id %}">Update</a>
+                        <a class="btn btn-sm btn-danger" href="{% url 'delete' task.id %}">Delete</a>
+                    </div>
+                </div>
+            </li>
+        {% empty %}
+            <li class="item-row">No tasks yet.</li>
+        {% endfor %}
+        </ul>
+    </section>
 </main>
 
 <div class="version-label">
-	Version : {{ version }}
+    Version : {{ version }}
 </div>
+
 </body>
 </html>
