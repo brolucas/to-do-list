@@ -104,7 +104,10 @@ def write_json(result: JSONTestResult) -> None:
             "skipped": len(result.skipped),
         },
     }
-    RESULT_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    RESULT_PATH.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
     print(f"JSON des tests écrit dans {RESULT_PATH}")
 
 

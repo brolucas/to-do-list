@@ -1,33 +1,21 @@
-Auto:
-  - id: TA01
-    description: Test d'accès à la page
-  - id: TA02
-    description: Création d’une tâche
-  - id: TA03
-    description: Affichage de la page liste des tâches
-  - id: TA04
-    description: Affichage de la page d’édition
-  - id: TA05
-    description: Modification d’une tâche
-  - id: TA06
-    description: Affichage de la page de suppression
-  - id: TA07
-    description: Suppression d’une tâche
-  - id: TA08
-    description: Import du module WSGI
-  - id: TA09
-    description: Import du module ASGI
-  - id: TA10
-    description: Import du fichier JSON
-
-Manuel:
-  - id: TM01
-    description: Création d’une tâche sans titre
-  - id: TM02
-    description: Mise à jour avec un titre vide
-  - id: TM03
-    description: Vérification du template utilisé pour la liste
-  - id: TM04
-    description: Vérification de l’ordre des tâches dans la liste
-  - id: TM05
-    description: Vérifier que la suppression redirige sur la bonne page
+Test:
+  - Auto: TA01 Test d'accès a la page [AUTO]
+      TA02 Création d'une tâche [AUTO]
+      TA03 Affichage de la page liste des tâches [AUTO]
+      TA04 Affichage de la page d'édition [AUTO]
+      TA05 Modification d'une tâche [AUTO]
+      TA06 Affichage de la page de suppression [AUTO]
+      TA07 Suppression d'une tâche [AUTO]
+      TA08 Import du module WSGI [AUTO]
+      TA09 Import du module ASGI [AUTO]
+      TA10 Import du fichier JSON [AUTO]
+      TA11 Parcours Selenium (ajout/suppression en lot) [AUTO-SELENIUM]
+      TA12 Parcours E2E Selenium (vérifier tâche restante) [AUTO-SELENIUM]
+      TA13 Champ priorité visible dans le formulaire [AUTO]
+      TA14 Création d'une tâche prioritaire et ordre en liste [AUTO]
+      TA15 Mise à jour d'une tâche pour la rendre prioritaire [AUTO]
+  - Manuel: TM01 Création d'une tâche sans titre [MANUEL]
+      TM02 Mise à jour avec un titre vide [MANUEL]
+      TM03 Vérification du template utilisé pour la liste [MANUEL]
+      TM04 Vérification de l'ordre des tâches dans la liste [MANUEL]
+      TM05 Vérifier que la suppression redirige sur la bonne page [MANUEL]
