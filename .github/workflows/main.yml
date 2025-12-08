@@ -61,10 +61,7 @@ jobs:
       # ----------------------------
       - name: Django unit tests
         run: |
-          python manage.py test --verbosity=2 --testrunner=xmlrunner.extra.djangotestrunner.XMLTestRunner --output-file=unit-tests-report.xml
-          # Convert XML to JSON si besoin pour script global
-          pip install junitparser
-          python scripts/convert_xml_to_json.py unit-tests-report.xml unit-tests-report.json
+           & "C:\Program Files\Git\bin\bash.exe" .\scripts\test_matrix.sh  
 
       # ----------------------------
       # 5. Run Selenium end-to-end tests
