@@ -1,0 +1,7 @@
+{
+  "name": "todo-project",
+  "version": "1.0.0",
+  "devDependencies": {
+    "pa11y": "^7.0.0"
+  }
+}
