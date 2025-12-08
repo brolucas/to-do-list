@@ -76,10 +76,9 @@ jobs:
       # 6. Run accessibility tests (pa11y)
       # ----------------------------
       - name: Accessibility tests
-        run: |
-          bash scripts/test_accessibility.sh
-          # Convertir les rapports HTML en JSON si nécessaire
-          python scripts/convert_pa11y_html_to_json.py accessibility-reports/ accessibility-report.json
+        run: |   
+            export CHROME_FLAGS="--no-sandbox --disable-setuid-sandbox"
+            bash scripts/test_accessibility.sh         
 
       # ----------------------------
       # 7. Collect and summarize reports
