@@ -71,7 +71,9 @@ jobs:
           kill $SERVER_PID
 
       - name: Accessibility tests (pa11y)
-        run: bash scripts/run_a11y.sh
+        run: |
+          npm install pa11y
+          bash scripts/run_a11y.sh
 
       - name: Test report
         run: python test_report.py > ci_test_report.txt
