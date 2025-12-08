@@ -36,7 +36,8 @@ def clear_tasks():
 def start_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
-    # options.add_argument("--headless")  # mode sans GUI
+    options.binary_location = "/usr/bin/chromium-browser"
+    options.add_argument("--headless")  # mode sans GUI
     return webdriver.Chrome(options=options)
 
 
