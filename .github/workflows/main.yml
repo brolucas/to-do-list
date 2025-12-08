@@ -60,8 +60,7 @@ jobs:
       # 4. Run Django tests (unit tests)
       # ----------------------------
       - name: Run test
-        shell: pwsh
-        run: & "C:\Program Files\Git\bin\bash.exe" .\scripts\test_matrix.sh
+        run: bash ./scripts/test_matrix.sh
       # ----------------------------
       # 5. Run Selenium end-to-end tests
       # ----------------------------
