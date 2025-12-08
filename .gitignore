@@ -1,12 +1,35 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Env / secrets
+.env
+.env.*
+
+# Django / SQLite
+db.sqlite3
 *.sqlite3
-*.zip
-/.idea/misc.xml
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/to-do-list.iml
-/.idea/vcs.xml
-/.idea/workspace.xml
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Releases / archives
+todolist-*.zip
+
+# Python packaging / coverage / tests
+*.egg-info/
+.pytest_cache/
+.coverage
+coverage.xml
+dist/
+build/
+result_test_selenium*.pdf

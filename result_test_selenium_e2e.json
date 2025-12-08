@@ -1,0 +1,15 @@
+{
+  "tests": [
+    {
+      "id": "TA_E2E",
+      "name": "Test E2E Selenium",
+      "status": "passed",
+      "details": {
+        "initial_count": 0,
+        "first_task_present": true,
+        "final_count": 1,
+        "e2e_status": "Success"
+      }
+    }
+  ]
+}

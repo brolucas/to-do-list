@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
-set -euo pipefail  # Active l'arrêt en cas d'erreur, vérification des variables non définies et pipefail
+set -euo pipefail
 
-# Usage: ./buicld.sh version=1.0.1
+# Usage: ./build.sh version=1.0.1
 arg="${1:-}"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Vérification de l'argument version
-if [[ -z "$arg" || "$arg" != version=* ]]; then
+if [[ "$arg" == version=* ]]; then
+  VERSION="${arg#version=}"
+else
   echo "Usage: ./build.sh version=x.y.z" >&2
   exit 1
 fi
-VERSION="${arg#version=}"
 
-# Vérification que la version est au format x.y.z
 if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Version '$VERSION' invalide (attendu x.y.z)" >&2
   exit 1
@@ -21,13 +20,11 @@ fi
 
 SETTINGS_PATH="todo/settings.py"
 
-# Vérification de l'existence du fichier settings.py
 if [[ ! -f "$SETTINGS_PATH" ]]; then
   echo "Fichier introuvable: $SETTINGS_PATH" >&2
   exit 1
 fi
 
-# Vérification du lint avec Ruff
 echo "Vérification du lint (Ruff)..."
 if command -v pipenv >/dev/null 2>&1; then
   pipenv run ruff check .
@@ -40,7 +37,6 @@ else
   exit 1
 fi
 
-# Exécution de la matrice de tests
 echo "Exécution de la matrice de tests..."
 if [[ -x "$SCRIPT_DIR/test_matrix.sh" ]]; then
   bash "$SCRIPT_DIR/test_matrix.sh"
@@ -49,13 +45,12 @@ else
   exit 1
 fi
 
-# Vérification si le tag existe déjà
 if git tag --list "$VERSION" | grep -q .; then
   echo "Le tag '$VERSION' existe déjà" >&2
   exit 1
 fi
 
-# Mise à jour de la version dans settings.py
+# Met à jour la variable VERSION dans settings.py
 python - <<PY
 from pathlib import Path
 import re, sys
@@ -69,16 +64,14 @@ if count == 0:
 path.write_text(new_text)
 PY
 
-# Ajout, commit et création du tag Git
+echo "Ajout de toutes les modifications au commit..."
 git add -A
 git commit -m "Bump version to $VERSION"
 git tag -a "$VERSION" -m "Version $VERSION"
 
-# Création de l'archive
 ARCHIVE_NAME="todolist-$VERSION.zip"
 git archive --format=zip --output "$ARCHIVE_NAME" --prefix="todolist-$VERSION/" HEAD
 
-# Confirmation de la version créée
 echo "Version $VERSION créée :"
 echo " - settings mis à jour et commit"
 echo " - tag '$VERSION' créé"

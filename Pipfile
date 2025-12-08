@@ -4,12 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-ruff = "*"
-django = "*"
+django = ">=4.2"
 
 [dev-packages]
 coverage = "*"
-pytest = "*"
+ruff = "*"
 
 [requires]
-python_version = "3.14"
+python_version = "3.12"

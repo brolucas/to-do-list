@@ -1,54 +1,171 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Versions de Python à tester
-python_versions=("3.13" "3.9" "2.7")
+# Run the Django test suite against a matrix of Python and Django versions.
+# Uses pipenv with a temporary Pipfile/venv per combo to avoid touching the main env.
 
-# Versions de Django à tester
-django_versions=("5" "4" )
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT_DIR"
 
-# Dossier pour stocker les environnements virtuels
-base_dir="envs"
+PYTHON_VERSIONS=("3.13" "3.9" "2.7")
+DJANGO_SPECS=("==5.*" "==4.*")
 
-# Créer un dossier de base pour les environnements virtuels
-mkdir -p $base_dir
+declare -a PIPENV_CMD
 
-# Fonction pour tester une version de Python et Django
-test_python_django() {
-    local python_version=$1
-    local django_version=$2
+find_pipenv() {
+  if command -v pipenv >/dev/null 2>&1; then
+    PIPENV_CMD=(pipenv)
+    return 0
+  fi
 
-    # Créer un environnement virtuel pour la combinaison Python/Django
-    env_dir="$base_dir/env_${python_version}_django_${django_version}"
-    mkdir -p $env_dir
-    cd $env_dir
+  if command -v py >/dev/null 2>&1; then
+    for ver in 3.13 3.12  3.9; do
+      if py "-$ver" -m pipenv --version >/dev/null 2>&1; then
+        PIPENV_CMD=(py "-$ver" -m pipenv)
+        return 0
+      fi
+    done
+  fi
 
-    # Installer la version de Python via pyenv si nécessaire
-    echo "==== Installation de Python $python_version ===="
-    pyenv install -s $python_version
-    pyenv local $python_version
+  if command -v python >/dev/null 2>&1 && python -m pipenv --version >/dev/null 2>&1; then
+    PIPENV_CMD=(python -m pipenv)
+    return 0
+  fi
 
-    # Créer un environnement virtuel
-    python -m venv venv
-    source venv/bin/activate
-
-    # Installer Django spécifique
-    echo "==== Installation de Django $django_version ===="
-    pip install "django==$django_version"
-
-    # Lancer les tests
-    echo "==== Lancement des tests avec Python $python_version et Django $django_version ===="
-    python manage.py test  # Remplacez par votre commande de test spécifique
-
-    # Désactivation de l'environnement virtuel
-    deactivate
-    cd - > /dev/null  # Revenir au répertoire initial
+  return 1
 }
 
-# Test pour chaque combinaison de Python et Django
-for python_version in "${python_versions[@]}"; do
-    for django_version in "${django_versions[@]}"; do
-        test_python_django $python_version $django_version
-    done
-done
+if ! find_pipenv; then
+  echo "pipenv introuvable. Installez-le, par exemple :" >&2
+  echo "  py -3.12 -m pip install --user pipenv" >&2
+  echo "Puis relancez le script." >&2
+  exit 1
+fi
 
-echo "Tests terminés pour toutes les combinaisons."
+find_python_path() {
+  local ver="$1"
+
+  # Essayer avec py.exe
+  if command -v py >/dev/null 2>&1; then
+    if py "-$ver" -c "import sys; print(sys.executable)" >/dev/null 2>&1; then
+      py "-$ver" -c "import sys; print(sys.executable.rsplit('.exe',1)[0] + '.exe')"
+      return 0
+    fi
+  fi
+
+  # Essayer python3.12, python3.13, etc.
+  if command -v "python$ver" >/dev/null 2>&1; then
+    command -v "python$ver"
+    return 0
+  fi
+
+  return 1
+}
+
+python_version_tuple() {
+  local py_cmd="$1"
+  "$py_cmd" - <<'PY'
+import sys
+print("{} {}".format(sys.version_info.major, sys.version_info.minor))
+PY
+}
+
+is_supported_combo() {
+  local py_major="$1"
+  local py_minor="$2"
+  local spec="$3"
+  # Python 2.x is not supported by this project
+  if [[ "$py_major" -lt 3 ]]; then
+    return 1
+  fi
+  # Django 5 requires Python >= 3.10
+  if [[ "$spec" == "==5.*" && ( "$py_major" -lt 3 || "$py_minor" -lt 10 ) ]]; then
+    return 1
+  fi
+  # Django 4 requires Python >= 3.8
+  if [[ "$spec" == "==4.*" && ( "$py_major" -lt 3 || "$py_minor" -lt 8 ) ]]; then
+    return 1
+  fi
+  # Django 3 requires Python >= 3.6
+  if [[ "$spec" == "==3.*" && ( "$py_major" -lt 3 || "$py_minor" -lt 6 ) ]]; then
+    return 1
+  fi
+  return 0
+}
+
+install_with_retry() {
+  local pipfile="$1"
+  local py_path="$2"
+  local max_attempts=3
+  local attempt=1
+  while (( attempt <= max_attempts )); do
+    if PIPENV_PIPFILE="$pipfile" PIPENV_VENV_IN_PROJECT=1 "${PIPENV_CMD[@]}" --python "$py_path" install --deploy --skip-lock >/dev/null; then
+      return 0
+    fi
+    echo "Install failed (attempt ${attempt}/${max_attempts}), retrying..." >&2
+    sleep 3
+    attempt=$((attempt + 1))
+  done
+  return 1
+}
+
+run_combo() {
+  local py_ver="$1"
+  local django_spec="$2"
+
+  local py_path
+  if ! py_path="$(find_python_path "$py_ver")"; then
+    echo "Skipping Python $py_ver: interpreter not found."
+    return 0
+  fi
+
+  local py_major py_minor
+  version_output="$(python_version_tuple "$py_path" 2>/dev/null || echo "0 0")"
+  py_major=$(echo "$version_output" | awk '{print $1}')
+  py_minor=$(echo "$version_output" | awk '{print $2}')
+
+
+  if ! is_supported_combo "$py_major" "$py_minor" "$django_spec"; then
+    echo "Skipping combo: Python ${py_major}.${py_minor} with Django $django_spec is unsupported."
+    return 0
+  fi
+
+  echo
+  echo "=== Python ${py_major}.${py_minor} + Django $django_spec ==="
+
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+
+  cat >"$tmpdir/Pipfile" <<EOF
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "${django_spec}"
+
+[dev-packages]
+
+[requires]
+python_version = "${py_ver}"
+EOF
+
+  if ! install_with_retry "$tmpdir/Pipfile" "$py_path"; then
+    echo "Skipping combo: installation failed after retries." >&2
+    rm -rf "$tmpdir"
+    return 0
+  fi
+
+  PIPENV_PIPFILE="$tmpdir/Pipfile" PIPENV_VENV_IN_PROJECT=1 "${PIPENV_CMD[@]}" run python "$ROOT_DIR/manage.py" test
+
+  echo "OK: Python ${py_major}.${py_minor} + Django ${django_spec}"
+
+  rm -rf "$tmpdir"
+}
+
+for py_ver in "${PYTHON_VERSIONS[@]}"; do
+  for django_spec in "${DJANGO_SPECS[@]}"; do
+    run_combo "$py_ver" "$django_spec"
+  done
+done
